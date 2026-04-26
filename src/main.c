@@ -56,7 +56,11 @@ void delete(const char* str);
 void peek(const char* str);
 
 void init() {
-    io_init();
+    if(io_init() == 1)
+       goto E;
+
+    return;
+E:  cleanup();
 }
 
 void cleanup() {

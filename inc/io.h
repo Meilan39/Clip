@@ -9,12 +9,11 @@
 
 #define BUFFER_SIZE 1024
 
-static const char meta_path[17];
-static const char data_path[17];
+static const char meta_path[] = "../data/meta.txt";
+static const char data_path[] = "../data/data.bin";
 
-static char buffer[BUFFER_SIZE];
-
-static FILE* meta;
+static FILE* meta_r;
+static FILE* meta_w;
 static FILE* data;
 
 int load();

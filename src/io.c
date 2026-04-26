@@ -1,10 +1,5 @@
 #include "../inc/io.h"
 
-static const char meta_path[] = "../data/meta.txt";
-static const char data_path[] = "../data/data.bin";
-
-static char buffer[BUFFER_SIZE];
-
 static FILE* meta = NULL;
 static FILE* data = NULL;
 
@@ -38,6 +33,9 @@ E:  out(DATA_READ);
 
 /* handles unable to write */
 int store() {
+    rewind(meta);
+    ftruncate(fileno(meta), 0);
+
     if(write_block(meta, &Alias))
         goto E;
     if(write_block(meta, &Empty))
@@ -49,13 +47,15 @@ E:  out(DATA_WRITE);
 }
 
 int read_block(FILE* meta, Block* block) {
+    char buffer[BUFFER_SIZE];
     if(fgets(buffer, BUFFER_SIZE, meta) == NULL)
         goto E;
+    buffer[strcspn(buffer, "\n")] = '\0';
 
     block->size = atoi(buffer);
     block->nodes = malloc(block->size * sizeof(Node));
 
-    for(int i = 0; i < block->size; i++) 
+    for(size_t i = 0; i < block->size; i++) 
         if(read_node(meta, &block->nodes[i]))
             goto E;
 
@@ -67,7 +67,7 @@ int write_block(FILE* meta, Block* block) {
     if(fprintf(meta, "%zu\n", block->size) < 0)
         goto E;
 
-    for(int i = 0; i < block->size; i++)
+    for(size_t i = 0; i < block->size; i++)
         if(write_node(meta, &block->nodes[i]))
             goto E;
 
@@ -76,10 +76,11 @@ E:  return 1;
 }
 
 int read_node(FILE* meta, Node* node) {       
-    char *token;
-    char *end;
+    char *token, *end;
+    char buffer[BUFFER_SIZE];
     if(fgets(buffer, BUFFER_SIZE, meta) == NULL)
         goto E;
+    buffer[strcspn(buffer, "\n")] = '\0';
 
     token = strtok(buffer, "|"); // TODO: alias | error
     if(token == NULL) goto E;
