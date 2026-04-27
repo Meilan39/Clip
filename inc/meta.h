@@ -2,21 +2,20 @@
 #define META
 
 #include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include "./out.h"
+#include "./block.h"
 
-typedef struct {
-    char *alias;
-    size_t offset;
-    size_t size;
-} Node;
+#define BUFFER_SIZE 1024
 
-typedef struct {
-    size_t size;
-    Node *nodes;
-} Block;
+static const char meta_path[] = "../data/meta.txt";
+static const char data_path[] = "../data/data.bin";
 
-static Block Alias;
-static Block Empty;
+int load_meta();
+int store_meta();
 
-void meta_cleanup();
+int read_block(FILE* meta, Block* block);
+int write_block(FILE* meta, Block* block);
 
 #endif // META

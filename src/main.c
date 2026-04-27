@@ -45,9 +45,13 @@ int main(int argc, char *argv[]) {
 }
 
 void get(const char* str) {
-    load();
-    get(str);
-    store();
+    if(load_meta() == 1) goto E;
+    if(search()) 
+    if(store() == 1) goto E;
+
+    return;
+E:  block_cleanup();
+    return;
 }
 
 

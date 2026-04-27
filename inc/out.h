@@ -3,9 +3,8 @@
 
 typedef enum {
     FORMAT,
-    DATA_NOTFOUND,
-    DATA_READ,
-    DATA_WRITE,
+    META_READ,
+    META_WRITE,
 } Debug;
 
 void out(Debug debug);
