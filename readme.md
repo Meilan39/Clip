@@ -46,7 +46,7 @@ Clip provides several subcommands to interact with your saved snippets.
 *   `clip peek <alias>` (shortcut: `p`)
     Prints a truncated preview (up to 100 characters) of the specified `<alias>`.
 
-*   `clip delete <alias>` (shortcut: `d`, `del`)
+*   `clip delete <alias>` (shortcut: `d`)
     Deletes the snippet associated with `<alias>`. The space is reclaimed for future snippets.
 
 *   `clip rename <old_alias> <new_alias>` (shortcut: `r`)
