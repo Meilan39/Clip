@@ -1,9 +1,36 @@
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include "../inc/meta.h"
+
+char meta_path[1024];
+char data_path[1024];
+
+static void init_paths() {
+    static int initialized = 0;
+    if (initialized) return;
+
+    const char* home = getenv("HOME");
+    char dir_path[1024];
+    if (home) {
+        snprintf(dir_path, sizeof(dir_path), "%s/.clip", home);
+        snprintf(meta_path, sizeof(meta_path), "%s/.clip/meta.txt", home);
+        snprintf(data_path, sizeof(data_path), "%s/.clip/data.bin", home);
+    } else {
+        strcpy(dir_path, "data");
+        strcpy(meta_path, "data/meta.txt");
+        strcpy(data_path, "data/data.bin");
+    }
+
+    mkdir(dir_path, 0700);
+    initialized = 1;
+}
 
 Block Alias, Empty;
 
 /* handles incorrect data format */
 int load_meta() {
+    init_paths();
     FILE* fptr = fopen(meta_path, "r");
 
     if(fptr == NULL) {
@@ -28,6 +55,7 @@ E:  if(fptr) fclose(fptr);
 
 /* handles unable to write */
 int store_meta(const Node* idx, const Node* node) {
+    init_paths();
     FILE* fptr = fopen(meta_path, "w");
     if(fptr == NULL) {
         out(META_WRITE);
