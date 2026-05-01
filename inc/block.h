@@ -2,6 +2,7 @@
 #define BLOCK
 
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct {
     char *alias;
@@ -14,18 +15,16 @@ typedef struct {
     Node *nodes;
 } Block;
 
-static Block Alias;
-static Block Empty;
-
 int block_init(Block *block, size_t size);
 int node_init(Node *node, const char* alias, size_t offset, size_t size);
-int block_cleanup();
+void node_free(Node *node);
+void block_cleanup(Block *block);
 
-int search(Block *block, Node* node, int (*comp)(const Node*, const Node*));
-int sort(Block *block, int (*comp)(const Node*, const Node*));
+Node* block_next(Block *block, const void *target, int (*compare)(const void *a, const void *b));
+void block_sort(Block *block, int (*compare)(const void *a, const void *b));
 
-int compare_alias(const Node *a, const Node *b);
-int compare_offset(const Node *a, const Node *b);
-int compare_size(const Node *a, const Node *b);
+int compare_alias(const void *a, const void *b);
+int compare_offset(const void *a, const void *b);
+int compare_size(const void *a, const void *b);
 
 #endif // BLOCK
