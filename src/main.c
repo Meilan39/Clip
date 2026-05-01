@@ -10,40 +10,53 @@ void new(const char* str);
 void delete(const char* str);
 void cat(const char* str);
 void peek(const char* str);
+void renm(const char* old, const char* new);
+void list();
 void clean();
 
 int main(int argc, char *argv[]) {
     if(argc == 2)
     {
-        if(strcmp(argv[1], "clean") == 0) {  // clip clean
+        if(strcmp(argv[1], "clean") == 0) { 
             clean();
+        } else
+        if(strcmp(argv[1], "list") == 0 || strcmp(argv[1], "ls") == 0) { 
+            list();
         }
-        else {                          // clip ~alias~
+        else {                         
             get(argv[1]);
         }
     } else
     if(argc == 3) 
     {
-        if(strcmp(argv[1], "get") == 0) {    // clip get ~alias~
+        if(strcmp(argv[1], "get") == 0 || strcmp(argv[1], "g") == 0) {    
             get(argv[2]); 
         } else
-        if(strcmp(argv[1], "new") == 0) {    // clip new ~alias~
+        if(strcmp(argv[1], "new") == 0 || strcmp(argv[1], "n") == 0) {    
             new(argv[2]); 
         } else
-        if(strcmp(argv[1], "delete") == 0) { // clip delete ~alias~
+        if(strcmp(argv[1], "delete") == 0 || strcmp(argv[1], "d") == 0) { 
             delete(argv[2]); 
         } else
-        if(strcmp(argv[1], "cat") == 0) {    // clip cat ~alias~
+        if(strcmp(argv[1], "cat") == 0 || strcmp(argv[1], "c") == 0) {   
             cat(argv[2]);
         } else
-        if(strcmp(argv[1], "peek") == 0) {   // clip peek ~alias~
+        if(strcmp(argv[1], "peek") == 0 || strcmp(argv[1], "p") == 0) {  
             peek(argv[2]);
-        } 
-        else {                          // formatting error
+        } else {                          
             out(FORMAT);
         }
     } 
-    else {                              // formatting error
+    else if(argc == 4) 
+    {
+        if(strcmp(argv[1], "renm") == 0 || strcmp(argv[1], "r") == 0) {  
+            renm(argv[2], argv[3]);
+        } 
+        else {                          
+            out(FORMAT);
+        }
+    }
+    else {                              
         out(FORMAT);
     }
 }
@@ -163,6 +176,38 @@ E:  meta_cleanup();
     return;
 }
 
+void renm(const char* old, const char* new) {
+    Node *next;
+    Node target = {0};
+    Node check = {0};
+
+    if(load_meta() == -1) goto E;
+
+    /* check if new alias already exist */
+    check.alias = (char*)new;
+    next = block_next(&Alias, &check, compare_alias);
+    if(next && strcmp(next->alias, new) == 0) {
+        out(RENAME_CONFLICT);
+        goto E; 
+    }
+
+    target.alias = (char*)old;
+    next = block_next(&Alias, &target, compare_alias);
+
+    if(next && strcmp(next->alias, old) == 0) {
+        free(next->alias);
+        next->alias = strdup(new);
+        block_sort(&Alias, compare_alias);
+        /* write back with update */
+        if(store_meta(NULL, NULL) == -1) goto E;
+    } else {
+        suggest(&Alias, old);
+    }
+
+E:  meta_cleanup();
+    return;   
+}
+
 void clean() {
     if(load_meta() == -1) goto E;
 
@@ -185,6 +230,18 @@ void clean() {
     block_init(&Empty, 0);
 
     if(store_meta(NULL, NULL) == -1) goto E;
+
+E:  meta_cleanup();
+    return;
+}
+
+void list() {
+    if(load_meta() == -1) goto E;
+
+    for(size_t i = 0; i < Alias.size; i++) {
+        Node* next = &Alias.nodes[i];
+        printf("  %s\n", next->alias);
+    }
 
 E:  meta_cleanup();
     return;

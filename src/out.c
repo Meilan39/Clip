@@ -18,15 +18,20 @@ void out(Debug debug) {
         case OVERWRITE:
             printf("Warning: overwriting existing alias\n");
             break;
+        case RENAME_CONFLICT:
+            printf("Error: new alias already exists\n");
+            break;
     }
 }
 
 void format() {
     printf("Usage: clip <command> [<alias>]\n");
-    printf("  get <alias>    : copy data to clipboard\n");
-    printf("  new <alias>    : create new data\n");
-    printf("  del <alias>    : delete data\n");
-    printf("  cat <alias>    : print all data\n");
-    printf("  peek <alias>   : print sub-data\n");
-    printf("  clean          : clean up deleted data\n");
+    printf("  get, g    <alias>             : copy data to clipboard\n");
+    printf("  new, n    <alias>             : create new data\n");
+    printf("  del, d    <alias>             : delete data\n");
+    printf("  cat, c    <alias>             : print all data\n");
+    printf("  peek, p   <alias>             : print sub-data\n");
+    printf("  rename, r <old_alias> <new>   : rename an alias\n");
+    printf("  list, ls                      : list all aliases\n");
+    printf("  clean                         : clean up deleted data\n");
 }
