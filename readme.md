@@ -34,20 +34,26 @@ Clip provides several subcommands to interact with your saved snippets.
 
 ### Commands
 
-*   `clip new <alias>`
+*   `clip new <alias>` (shortcut: `n`)
     Saves the current text in your system clipboard to the specified `<alias>`. If the alias already exists, it will be overwritten.
 
-*   `clip get <alias>`
+*   `clip get <alias>` (shortcut: `g`)
     Retrieves the snippet associated with `<alias>` and copies it back to your system clipboard.
 
-*   `clip cat <alias>`
+*   `clip cat <alias>` (shortcut: `c`)
     Prints the complete content of the specified `<alias>` to the standard output.
 
-*   `clip peek <alias>`
+*   `clip peek <alias>` (shortcut: `p`)
     Prints a truncated preview (up to 100 characters) of the specified `<alias>`.
 
-*   `clip delete <alias>`
+*   `clip delete <alias>` (shortcut: `d`, `del`)
     Deletes the snippet associated with `<alias>`. The space is reclaimed for future snippets.
+
+*   `clip rename <old_alias> <new_alias>` (shortcut: `r`)
+    Renames an existing alias to a new name.
+
+*   `clip list` (shortcut: `ls`)
+    Lists all saved aliases.
 
 *   `clip clean`
     Runs garbage collection to compact the binary storage file and reclaim fragmented disk space left by deleted snippets.

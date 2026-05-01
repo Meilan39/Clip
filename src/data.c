@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include <string.h>
 
-void get_data(const Node* node) {}
-
 void copy_data(const Node* node) {
     FILE *f = fopen(data_path, "rb");
     if (!f) return;
