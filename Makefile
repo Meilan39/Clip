@@ -30,7 +30,11 @@ uninstall:
 	@rm -f $(INSTALL_DIR)/clip
 	@echo "clip removed from $(INSTALL_DIR)/clip"
 
+purge: uninstall
+	@rm -rf $$HOME/.clip
+	@echo "All clip data removed from $$HOME/.clip"
+
 clean:
 	rm -rf $(BUILD_DIR)
 
-.PHONY: all clean install uninstall
+.PHONY: all clean install uninstall purge

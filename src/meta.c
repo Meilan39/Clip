@@ -66,10 +66,8 @@ int store_meta(const Node* idx, const Node* node) {
         out(META_WRITE);
         goto E;
     }
-    /** 
-      * idx != NULL, node == NULL -> delete node
-      * If we are deleting a node, we should add it to Empty.
-      */
+    /* idx != NULL, node == NULL -> delete node */
+    /* delete node -> add it to Empty           */
     const Node* empty_node = (idx != NULL && node == NULL) ? idx : NULL;
     if(write_block(fptr, &Empty, NULL, empty_node)) {
         out(META_WRITE);
@@ -92,15 +90,16 @@ int read_block(FILE* meta, Block* block) {
     char *token, *end, *alias;
     size_t size, offset;
 
-    /* read header */
-    if(fgets(buffer, BUFFER_SIZE, meta) == NULL)
-        goto E;
-    buffer[strcspn(buffer, "\n")] = '\0';
-
-    size = strtol(buffer, &end, 10);
-    if (*end != '\0')
-        goto E;
-    block_init(block, size);
+    /* uninitialized meta files -> initialize size-0 blocks */
+    if(fgets(buffer, BUFFER_SIZE, meta) == NULL) {
+        block_init(block, 0);
+    } else {
+        buffer[strcspn(buffer, "\n")] = '\0';
+        size = strtol(buffer, &end, 10);
+        if (*end != '\0')
+            goto E;
+        block_init(block, size);
+    }
 
     for(size_t i = 0; i < block->size; i++) {
         /* read line */
