@@ -4,6 +4,7 @@
 #include "../inc/data.h"
 #include "../inc/block.h"
 #include "../inc/suggest.h"
+#include "../inc/clipboard.h"
 
 void get(const char* str);
 void new(const char* str);
@@ -71,7 +72,7 @@ void get(const char* str) {
     next = block_next(&Alias, &target, compare_alias);
 
     if(next && strcmp(next->alias, str) == 0) {
-        copy_data(next);
+        get_data(next);
     } else {
         suggest(&Alias, str);
     }
@@ -88,7 +89,7 @@ void new(const char* str) {
 
     if(load_meta() == -1) goto E;
 
-    if((segment = read_clipboard(&seg_size)) == NULL)
+    if((segment = clipboard_get(&seg_size)) == NULL)
         goto E;
 
     target.alias = (char*)str;
